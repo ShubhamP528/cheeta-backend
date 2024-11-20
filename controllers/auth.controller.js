@@ -95,11 +95,14 @@ exports.googleAuthCallback = async (req, res) => {
     console.log(user);
     // create a token
     const token = createToken(user._id, user.email);
-    if (process.env.production) {
+    if (process.env.NODE_ENV === "production") {
+      console.log("this is a production");
       res.redirect(
         `https://cheeta-chat.netlify.app/?token=${token}&email=${user.email}&name=${user.name}&userId=${user._id}&profilePicture=${user.profilePicture}&username=${user.userId}`
       );
     } else {
+      console.log("this is a development");
+
       res.redirect(
         `http://localhost:3001/?token=${token}&email=${user.email}&name=${user.name}&userId=${user._id}&profilePicture=${user.profilePicture}&username=${user.userId}`
       );
