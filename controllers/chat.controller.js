@@ -23,10 +23,12 @@ exports.getUser = async (req, res) => {
 
     const to = user.userId;
 
+    console.log(to, "  ", from);
+
     const chats = await Chat.find({
       $or: [
         { from: from, to: to },
-        { from: to, from: to },
+        { from: to, to: from },
       ],
     });
 
