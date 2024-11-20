@@ -97,7 +97,7 @@ exports.googleAuthCallback = async (req, res) => {
     const token = createToken(user._id, user.email);
     if (process.env.production) {
       res.redirect(
-        `https://smart-shop-kro.netlify.app/?token=${token}&email=${user.email}&name=${user.name}&userId=${user._id}&profilePicture=${user.profilePicture}&username=${user.userId}`
+        `https://cheeta-chat.netlify.app/?token=${token}&email=${user.email}&name=${user.name}&userId=${user._id}&profilePicture=${user.profilePicture}&username=${user.userId}`
       );
     } else {
       res.redirect(

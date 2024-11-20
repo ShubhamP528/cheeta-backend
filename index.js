@@ -13,6 +13,7 @@ const allowedOrigins = [
   "http://localhost:8080/",
   "https://metrixcolorchange.netlify.app",
   "*",
+  "https://cheeta-chat.netlify.app",
 ];
 
 const corsOptions = {
