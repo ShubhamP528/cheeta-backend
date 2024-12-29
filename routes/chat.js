@@ -16,4 +16,9 @@ router.post("/storeChat", storeChat);
 
 router.get("/getChatHistory", getChatHistory);
 
+router.get("/hii", (req, res) => {
+  console.log("hii");
+  res.send("hi");
+});
+
 module.exports = router;
