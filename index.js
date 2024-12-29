@@ -10,7 +10,9 @@ const server = http.createServer(app);
 
 const allowedOrigins = [
   "http://localhost:3001",
-  "http://localhost:8080/",
+  "http://localhost:3001/",
+  // "http://localhost:8080/",
+  // "http://localhost:8080",
   "https://metrixcolorchange.netlify.app",
   "*",
   "https://cheeta-chat.netlify.app",
@@ -71,22 +73,34 @@ io.on("connection", (socket) => {
 
   // for calling
 
-  socket.on("user:call", ({ to, offer }) => {
-    io.to(to).emit("incomming:call", { from: socket.id, offer });
+  socket.on("videoCalling", ({ to, from, offer }) => {
+    console.log("videoCalling", to, from);
+    io.to(to).emit("incomming:videCall", { from: from, offer });
   });
 
-  socket.on("call:accepted", ({ to, ans }) => {
-    io.to(to).emit("call:accepted", { from: socket.id, ans });
+  socket.on("call:accepted", ({ to, from, ans }) => {
+    console.log("call:accepted", to, from);
+    io.to(to).emit("call:accepted", { from: from, to, ans });
   });
 
-  socket.on("peer:nego:needed", ({ to, offer }) => {
-    console.log("peer:nego:needed", offer);
-    io.to(to).emit("peer:nego:needed", { from: socket.id, offer });
+  socket.on("call:rejected", ({ to, from }) => {
+    console.log("call:rejected", to, from);
+    io.to(to).emit("call:rejected", { from: from });
   });
 
-  socket.on("peer:nego:done", ({ to, ans }) => {
-    console.log("peer:nego:done", ans);
-    io.to(to).emit("peer:nego:final", { from: socket.id, ans });
+  socket.on("peer:nego:needed", ({ to, from, offer }) => {
+    console.log("peer:nego:needed", to, from);
+    io.to(to).emit("peer:nego:needed", { from: from, offer });
+  });
+
+  socket.on("peer:nego:done", ({ to, from, ans }) => {
+    console.log("peer:nego:done", to, from);
+    io.to(to).emit("peer:nego:final", { from: from, ans });
+  });
+
+  socket.on("call:ended", ({ to, from }) => {
+    console.log("call:ended", to, from);
+    io.to(to).emit("call:ended", { from: from });
   });
 
   socket.on("disconnect", (room) => {

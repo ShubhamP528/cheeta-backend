@@ -9,7 +9,10 @@ exports.requiedAuth = async (req, res, next) => {
         .status(401)
         .json({ message: "Authorization token is required" });
     }
+
     const token = authorization.split(" ")[1];
+
+    console.log(token);
     const payload = await verifyToken(token);
     console.log(payload);
     const user = await User.findById(payload.id);

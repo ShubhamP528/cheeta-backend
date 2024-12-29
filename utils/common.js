@@ -12,15 +12,18 @@ exports.createToken = (_id, email) => {
   return token;
 };
 
-exports.verifyToken = (token) => {
+exports.verifyToken = async (token) => {
   try {
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET || "thisismypersonalSecret"
     );
+    console.log("decodeding ");
+    console.log(decoded);
     return decoded;
   } catch (error) {
-    throw new Error("Invalid token");
+    console.error(error);
+    throw new Error(error.message);
   }
 };
 

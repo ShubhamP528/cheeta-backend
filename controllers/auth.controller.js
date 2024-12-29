@@ -7,6 +7,7 @@ const {
   verifyToken,
   generateUserId,
 } = require("../utils/common");
+const { OAuth2Client } = require("google-auth-library");
 
 exports.signup = async (req, res) => {
   try {
@@ -40,7 +41,7 @@ exports.signup = async (req, res) => {
       email: user.email,
       userId: user._id,
       token,
-      usename: user.userId,
+      username: user.userId,
       profilePicture: user.profilePicture,
     });
   } catch (error) {
@@ -66,7 +67,7 @@ exports.login = async (req, res) => {
       name: user.name,
       email: user.email,
       userId: user._id,
-      usename: user.userId,
+      username: user.userId,
       token,
       profilePicture: user.profilePicture,
     });
@@ -111,6 +112,64 @@ exports.googleAuthCallback = async (req, res) => {
     // res
     //   .status(200)
     //   .json({ email: user.email, name: user.name, token, userId: user._id });
+  } catch (e) {
+    console.error(e);
+    res.status(400).json({ error: e.message });
+  }
+};
+
+exports.googleAuthCallback = async (req, res) => {
+  try {
+    const tokenT = req.body.token; // The token sent from the frontend
+
+    if (!tokenT) {
+      return res.status(400).json({ message: "Token is missing" });
+    }
+    const client = new OAuth2Client(process.env.CLIENTID);
+
+    // Verify the Google ID token using OAuth2Client
+    const ticket = await client.verifyIdToken({
+      idToken: tokenT,
+      audience: process.env.CLIENTID, // Your Google OAuth 2.0 Client ID
+    });
+
+    const payload = ticket.getPayload(); // Get user info from the token
+    const email = payload.email;
+    const name = payload.name;
+    const profilePicture = payload.picture;
+    const googleId = payload.sub; // This is the unique ID from Google
+    console.log(payload);
+
+    // Check if the user already exists in the database
+    let user;
+    user = await User.findOne({
+      $or: [{ googleAuthId: googleId }, { email: email }],
+    });
+
+    if (!user) {
+      const userId = generateUserId(name);
+
+      // If the user doesn't exist, create a new user
+      user = new User({
+        googleAuthId: googleId,
+        name: name,
+        email: email,
+        profilePicture: profilePicture,
+        userId,
+      });
+    }
+
+    await user.save();
+
+    const token = createToken(user._id, email);
+    return res.json({
+      name: user.name,
+      email: user.email,
+      userId: user._id,
+      username: user.userId,
+      token,
+      profilePicture: user.profilePicture,
+    });
   } catch (e) {
     console.error(e);
     res.status(400).json({ error: e.message });

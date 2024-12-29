@@ -34,4 +34,6 @@ router.get(
   googleAuthCallback
 );
 
+router.post("/google/callback", googleAuthCallback);
+
 module.exports = router;
