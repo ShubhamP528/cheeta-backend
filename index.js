@@ -17,6 +17,7 @@ const allowedOrigins = [
   "https://metrixcolorchange.netlify.app",
   "*",
   "https://cheeta-chat.netlify.app",
+  "https://netlify.app",
 ];
 
 const corsOptions = {
