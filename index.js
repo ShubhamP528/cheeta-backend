@@ -11,8 +11,9 @@ const server = http.createServer(app);
 const allowedOrigins = [
   "http://localhost:3001",
   "http://localhost:3001/",
-  // "http://localhost:8080/",
-  // "http://localhost:8080",
+  "http://localhost:8080/",
+  "http://localhost:8080",
+  "https://cheetah-dev.netlify.app",
   "https://metrixcolorchange.netlify.app",
   "*",
   "https://cheeta-chat.netlify.app",
